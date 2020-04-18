@@ -4,7 +4,8 @@ from bank_api import models
 account_fields = {
     'name': fields.String,
     'surname': fields.String,
-    'credit': fields.Float,
+    'balance': fields.Float,
+    'owner_id': fields.Integer,
     'uri': fields.Url('api.account')
 }
 
@@ -19,7 +20,7 @@ class AccountListAPI(Resource):
 
     def get(self):
         accounts = models.Account.query.all()
-        return {'accounts': [marsal(account, account_fields) for account in accounts]}
+        return {'accounts': [marshal(account, account_fields) for account in accounts]}
 
     def post(self):
         pass
