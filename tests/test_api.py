@@ -18,33 +18,54 @@ def test_get_accounts(test_client):
     assert response.json == {
         'accounts': [
             {
+                'account_number': 1,
                 'name': 'Robin',
                 'surname': 'Staunton-Collins',
                 'balance': 50.0,
-                'owner_id': 1,
+                'customer_id': 1,
                 'uri': '/api/v1/accounts/1'
             },
             {
+                'account_number': 2,
                 'name': 'Matin',
                 'surname': 'Abbasi',
                 'balance': 200.0,
-                'owner_id': 2,
+                'customer_id': 2,
                 'uri': '/api/v1/accounts/2'
             },
             {
+                'account_number': 3,
                 'name': 'Robin',
                 'surname': 'Staunton-Collins',
                 'balance': 130.0,
-                'owner_id': 1,
+                'customer_id': 1,
                 'uri': '/api/v1/accounts/3'
             },
             {
+                'account_number': 4,
                 'name': 'Rodrigo',
                 'surname': 'Hammerly',
                 'balance': 450.0,
-                'owner_id': 3,
+                'customer_id': 3,
                 'uri': '/api/v1/accounts/4'
             },
         ]
     }
     
+def test_post_account(test_client):
+    response = test_client.post(
+        '/api/v1/accounts',
+        data={
+            'name': 'Steve',
+            'surname': 'Carell',
+            'balance': 300_000,
+            'customer_id': 5
+        }
+    )
+    assert response.json == {
+        'account_number': 5,
+        'name': 'Steve',
+        'surname': 'Carell',
+        'balance': 300_000.0,
+        'uri': '/api/v1/accounts/5'
+    }
