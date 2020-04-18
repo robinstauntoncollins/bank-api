@@ -11,7 +11,7 @@ from bank_api.api.v1 import api_v1_bp, API_VERSION_V1
 
 
 
-def create_app(config_name=None):
+def create_app(config_name: str=None) -> Flask:
     if config_name is None:
         config_name = os.environ.get('BANKAPI_CONFIG', 'development')
     app = Flask(__name__)

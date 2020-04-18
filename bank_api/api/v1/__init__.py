@@ -13,8 +13,12 @@ from . import accounts
 api.add_resource(accounts.AccountListAPI, '/accounts', '/accounts/', endpoint='accounts')
 api.add_resource(accounts.AccountAPI, '/accounts/<int:id>', '/accounts/<int:id>/', endpoint='account')
 
+from . import customers
+api.add_resource(customers.CustomerListAPI, '/customers', '/customers/', endpoint='customers')
+api.add_resource(customers.CustomerAPI, '/customer/<int:id>', '/customer/<int:id>', endpoint='customer')
 
 def get_catelog():
     return {
-        'accounts_url': api.url_for(accounts.AccountListAPI, _external=True)
+        'accounts_url': api.url_for(accounts.AccountListAPI, _external=True),
+        'customers_url': api.url_for(customers.CustomerListAPI, _external=True)
     }

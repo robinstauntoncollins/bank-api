@@ -1,10 +1,9 @@
 from flask_restful import Resource, reqparse, fields, marshal
-from bank_api import models
+from bank_api import models, utils, errors
+
 
 account_fields = {
     'account_number': fields.Integer,
-    'name': fields.String,
-    'surname': fields.String,
     'balance': fields.Float,
     'customer_id': fields.Integer,
     'uri': fields.Url('api.account')
@@ -13,12 +12,9 @@ account_fields = {
 class AccountListAPI(Resource):
 
     def __init__(self):
-        self.reqparse = reqparse.RequestParser()
-        self.reqparse.add_argument('account_number', type=int, required=True, location="json")
-        self.reqparse.add_argument('name', type=str, default="", location="json")
-        self.reqparse.add_argument('surname', type=str, default="", location="json")
-        self.reqparse.add_argument('balance', type=float, required=False, location="json")
+        self.reqparse = reqparse.RequestParser()        
         self.reqparse.add_argument('customer_id', type=int, required=True, location="json")
+        self.reqparse.add_argument('balance', type=float, default=0, required=False, location="json")
         super(AccountListAPI, self).__init__()
 
     def get(self):
@@ -27,16 +23,39 @@ class AccountListAPI(Resource):
 
     def post(self):
         args = self.reqparse.parse_args()
-        account = models.Account.query.filter_by()
+        customer = models.Customer.query.get_or_404(args['customer_id'])
+        account_number = utils.generate_random_account_number()
+        if models.Account.query.filter_by(account_number=account_number).first() is not None:
+            raise errors.InvalidData(f"An account with this number already exists")
+        args['account_number'] = account_number
+        account = models.Account().import_data(args)
+        models.db.session.add(account)
+        models.db.session.commit()
+        return {'account': marshal(account, account_fields)}, 201
 
+        
 
 class AccountAPI(Resource):
 
+    def __init__(self):
+        self.reqparse = reqparse.RequestParser()        
+        self.reqparse.add_argument('balance', type=float, required=False, location="json")
+        super(AccountAPI, self).__init__()
+
     def get(self, id):
-        pass
+        account = models.Account.query.get_or_404(id)
+        return {'account': marshal(account, account_fields)}
 
     def put(self, id):
-        pass
+        account = models.Account.query.get_or_404(id)
+        args = self.reqparse.parse_args()
+        account.balance = args['balance']
+        models.db.session.add(account)
+        models.db.session.commit()
+        return {'account': marshal(account, account_fields)}
 
     def delete(self, id):
-        pass
+        account = models.Account.query.get_or_404(id)
+        models.db.session.delete(account)
+        models.db.session.commit()
+        return {'result': True}

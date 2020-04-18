@@ -1,26 +1,44 @@
-
+import pytest
 from bank_api.models import Account, Customer, db
 
 
 class TestAccountModel():
 
-    def test_account_model_basic(self):
+    def test_basic(self):
         new_account = Account().import_data({
             'account_number': 1,
             'balance': 0,
+            'customer_id': 1
         })
-        assert new_account.account_number == 1
+        assert new_account.account_number == '1'
         assert new_account.balance == 0
         account_data = new_account.export_data()
         assert account_data == {
             'account_number': 1,
             'balance': 0,
+            'customer_id': 1
         }
 
-    def test_account_model_db(self, test_client):
+    def test_invalid_data(self):
+        with pytest.raises(ValueError):
+            Account().import_data({
+                'balance': 0,
+                'customer_id': 1
+            })
+
+    def test_repr(self):
         new_account = Account().import_data({
             'account_number': 1,
             'balance': 0,
+            'customer_id': 1
+        })
+        assert repr(new_account) == "<Account 1> Balance: 0 Owner: 1"
+
+    def test_db(self, test_client):
+        new_account = Account().import_data({
+            'account_number': '1',
+            'balance': 0,
+            'customer_id': 1
         })
         db.session.add(new_account)
         db.session.commit()
@@ -52,6 +70,19 @@ class TestCustomerModel():
             'name': 'Robin',
             'surname': 'Staunton-Collins'
         }
+
+    def test_invalid_data(self):
+        with pytest.raises(ValueError):
+            Customer().import_data({
+                'name': 0,
+            })
+
+    def test_repr(self):
+        new_customer = Customer().import_data({
+            'name': 'Robin',
+            'surname': 'Staunton-Collins'
+        })
+        assert repr(new_customer) == "<Customer Robin Staunton-Collins>"
     
     def test_customer_model_db(self, test_client):
         new_customer = Customer().import_data({

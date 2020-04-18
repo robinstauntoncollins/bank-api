@@ -3,7 +3,8 @@ from flask_sqlalchemy import SQLAlchemy
 db = SQLAlchemy()
 
 class Account(db.Model):
-    account_number = db.Column(db.Integer, primary_key=True, unique=True)
+    id = db.Column(db.Integer, primary_key=True, unique=True)
+    account_number = db.Column(db.String(20), index=True, unique=True)
     balance = db.Column(db.Float, default=0)
     customer_id = db.Column(db.Integer, db.ForeignKey('customer.id'))
 
@@ -12,17 +13,20 @@ class Account(db.Model):
 
     def import_data(self, data):
         try:
-            self.account_number = data['account_number']
+            self.account_number = str(data['account_number'])
             self.balance = data['balance']
+            self.customer_id = data['customer_id']
         except KeyError as e:
             raise ValueError('Invalid class - missing ' + e.args[0])
         return self
 
     def export_data(self):
         return {
-            'account_number': self.account_number,
-            'balance': self.balance
+            'account_number': int(self.account_number),
+            'balance': self.balance,
+            'customer_id': self.customer_id
         }
+
 
 class Customer(db.Model):
     id = db.Column(db.Integer, primary_key=True, unique=True)
