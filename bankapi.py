@@ -5,7 +5,11 @@ app = create_app('development')
 
 @app.shell_context_processor
 def make_shell_context():
-    return {'db': db, 'Account': models.Account, 'Customer': models.Customer}
+    return {
+        'db': db,
+        'Account': models.Account,
+        'Customer': models.Customer,
+        'Transaction': models.Transaction}
 
 if __name__ == '__main__':
     app.run()

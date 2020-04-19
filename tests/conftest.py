@@ -1,7 +1,8 @@
+from datetime import datetime
 import pytest
 
 from bank_api import create_app
-from bank_api.models import Account, Customer, db
+from bank_api.models import Account, Customer, Transaction, db
 
 
 @pytest.fixture()
@@ -50,3 +51,20 @@ def test_accounts():
         }
     ]
     return [Account().import_data(account) for account in accounts]
+
+
+@pytest.fixture()
+def test_transactions():
+    transactions = [
+        {
+            'account_id': 1,
+            'time': datetime(2020, 4, 19, 15, 0, 0),
+            'amount': 20
+        },
+        {
+            'account_id': 2,
+            'time': datetime(2020, 4, 19, 15, 0, 0),
+            'amount': -20
+        }
+    ]
+    return [Transaction().import_data(transaction) for transaction in transactions]

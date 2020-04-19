@@ -16,5 +16,8 @@ def test_index(test_client):
     assert response.json == {'version': {
         'v1': {
             'accounts_url': 'http://localhost/api/v1/accounts',
-            'customers_url': 'http://localhost/api/v1/customers'
-        }}}
+            'customers_url': 'http://localhost/api/v1/customers',
+            'transactions_url': 'http://localhost/api/v1/transactions'
+            }
+        }
+    }

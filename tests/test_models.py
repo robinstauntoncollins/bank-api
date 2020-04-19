@@ -1,5 +1,6 @@
+from datetime import datetime
 import pytest
-from bank_api.models import Account, Customer, db
+from bank_api.models import Account, Customer, Transaction, db
 
 
 class TestAccountModel():
@@ -26,13 +27,16 @@ class TestAccountModel():
                 'customer_id': 1
             })
 
-    def test_repr(self):
+    def test_repr(self, test_client):
         new_account = Account().import_data({
             'account_number': 1,
             'balance': 0,
             'customer_id': 1
         })
-        assert repr(new_account) == "<Account 1> Balance: 0 Owner: 1"
+        db.session.add(new_account)
+        db.session.commit()
+        a = Account.query.first()
+        assert repr(a) == "<Account ID: 1> Balance: 0.0 Owner ID: 1"
 
     def test_db(self, test_client):
         new_account = Account().import_data({
@@ -77,12 +81,15 @@ class TestCustomerModel():
                 'name': 0,
             })
 
-    def test_repr(self):
+    def test_repr(self, test_client):
         new_customer = Customer().import_data({
             'name': 'Robin',
             'surname': 'Staunton-Collins'
         })
-        assert repr(new_customer) == "<Customer Robin Staunton-Collins>"
+        db.session.add(new_customer)
+        db.session.commit()
+        c = Customer.query.first()
+        assert repr(c) == "<Customer Robin Staunton-Collins>"
     
     def test_customer_model_db(self, test_client):
         new_customer = Customer().import_data({
@@ -106,3 +113,34 @@ class TestCustomerModel():
             first_account,
             second_account
         ]
+
+
+class TestTransactionModel():
+
+    def test_basic(self, test_client):
+        new_trans = Transaction().import_data({
+            'account_id': 1,
+            'amount': 50
+        })
+        db.session.add(new_trans)
+        db.session.commit()
+        added_trans = Transaction.query.first()
+        assert added_trans == new_trans
+        transaction_Data = added_trans.export_data()
+        assert transaction_Data == {
+            'account_id': 1,
+            'amount': 50.0
+        }
+
+    def test_repr(self, test_client):
+        new_trans = Transaction().import_data({
+            'account_id': 1,
+            'time': datetime(2020, 4, 19, 15),
+            'amount': 50
+        })
+        db.session.add(new_trans)
+        db.session.commit()
+        t = Transaction.query.first()
+        assert repr(t) == "<Transaction - t_id: 1 time: 2020-04-19 15:00:00 account_id: 1 amount: 50.0>"
+
+

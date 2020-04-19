@@ -21,7 +21,7 @@ class TestCustomers():
             'customer': {
                 'name': "Robin",
                 'surname': "Staunton-Collins",
-                'uri': '/api/v1/customer/1'
+                'uri': '/api/v1/customers/1'
             }
         }
 
@@ -38,12 +38,12 @@ class TestCustomers():
                 {
                     'name': 'Robin',
                     'surname': 'Staunton-Collins',
-                    'uri': '/api/v1/customer/1'
+                    'uri': '/api/v1/customers/1'
                 },
                 {
                     'name': 'Jerry',
                     'surname': 'Seinfeld',
-                    'uri': '/api/v1/customer/2'
+                    'uri': '/api/v1/customers/2'
                 },
             ]
         }
