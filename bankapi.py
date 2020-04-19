@@ -12,4 +12,4 @@ def make_shell_context():
         'Transaction': models.Transaction}
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)

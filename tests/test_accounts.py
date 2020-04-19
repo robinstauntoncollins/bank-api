@@ -29,7 +29,7 @@ class TestAccounts():
             ]
         }
     
-    def test_post_account(self, test_client):
+    def test_post_accounts(self, test_client):
         c = Customer(name="Robin", surname="Staunton-Collins")
         db.session.add(c)
         db.session.commit()
