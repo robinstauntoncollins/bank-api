@@ -1,12 +1,23 @@
 ## Initial Design
 
+* Customers collection, Accounts collection, Transactions collection
 
+* 'Internal' RESTful API based on these collections and another 'Intent' API which may not be so RESTful using verbs instead
+of nouns like '/transfer', '/openAccount'.
+
+* Relationship between customer db model and account db model - view list of accounts owned by that customer
+
+* Relationship between account db model and transaction db model - view list of transaction owned by that account
+
+* Intent API endpoints: '/openAccount', '/transfer', '/customerInfo' - these could call the Internal API in whatever combination required to fulfill the request.
 
 ### Random thoughts
 
-* Will go for two separate collections for '/accounts' and '/transactions' rather than having the transactions for the account accessible through '/accounts/<account_id>/transactions/<transaction_id>' as it's more straightforward initially. 
+* I like snake_case for endpoints, parameters etc. however many developers (from Java backgrounds) may prefer camelCase. Internal API will use snake_case while Intent API will use camelCase. 
 
-* Two tables - one for Accounts
+* Will go for two separate collections for '/accounts' and '/transactions' rather than having the transactions for the account accessible through '/accounts/<account_id>/transactions/<transaction_id>' as it's more straightforward initially. That can always be added as a convenience later. 
+
+* Two tables - one for Accounts another for Transactions
 
 ### Considerations
 

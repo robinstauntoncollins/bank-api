@@ -7,7 +7,7 @@ Design an API to be used for opening a new current account of an already existin
 * The API will expose an endpoint which accepts the user information (customerID, initialCredit)
 * Once the endpoint is called, a new account will be opened and connected to the user whose ID is customerID
 * If initialCredit is not zero, a transaction will be sent to the new account.
-* Another endpoint will output the user information showing Name, Surname, Blance and the transactions of the account
+* Another endpoint will output the user information showing Name, Surname, Balance and the transactions of the account
 
 ### Bonus
 
