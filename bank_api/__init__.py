@@ -36,16 +36,20 @@ def create_app(config_name: str=None) -> Flask:
         from bank_api.api.v1 import get_catelog as v1_catelog
         return {'version': {'v1': v1_catelog()}}
 
+    @app.errorhandler(400)
+    def bad_request(error):
+        return make_response({'error': 'Bad request'}, 400)
+
     @app.errorhandler(404)
     def not_found(error):
         return make_response({'error': 'Not found'}, 404)
 
     @app.errorhandler(405)
-    def not_found(error):
+    def method_not_allowed(error):
         return make_response({'error': 'Method not allowed'}, 405)
 
     @app.errorhandler(500)
-    def not_found(error):
+    def internal_server_error(error):
         return make_response({'error': 'Internal Server Error'}, 500)
     
     return app

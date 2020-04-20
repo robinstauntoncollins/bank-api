@@ -1,7 +1,10 @@
 from flask import Blueprint, g, request, abort, current_app
-from flask_restful import marshal
+from flask_restful import marshal, fields
 
+import bank_api.api.v1 as bankapi_v1
 from bank_api.api.v1.accounts import create_account, account_fields
+from bank_api.api.v1.customers import customer_fields
+from bank_api.api.v1.transactions import transaction_fields
 from bank_api.models import Account, Transaction, Customer, db
 
 intent_api = Blueprint('intent', __name__)
@@ -112,5 +115,32 @@ def open_account():
         'result': True,
         'account': marshal(a, account_fields)
     }
-    
 
+
+@intent_api.route('/getCustomerInfo', methods=['GET'])
+def get_customer_info():
+    if not request.json:
+        abort(400)
+
+    json = request.get_json()
+    current_app.logger.info(f"Request received: {json}")
+    if 'customerID' not in json or type(json['customerID']) != str:
+        current_app.logger.info(f"'customerID' not found in {json}")
+        abort(404)
+
+    c_id = json['customerID']
+    c = Customer.query.get_or_404(c_id)
+
+    response = {'customer': marshal(c, customer_fields)}
+
+    c_accounts = c.accounts.all()
+    response['accounts'] = [marshal(account, account_fields) for account in c_accounts]
+
+    transactions = []
+    for account in c_accounts:
+        for t in account.transactions.all():
+            transactions.append(t)
+    response['transactions'] = [marshal(t, transaction_fields) for t in transactions]
+
+    return response
+        
