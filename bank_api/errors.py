@@ -1,3 +1,4 @@
+from flask import jsonify
 
 class InvalidData(Exception):
     status_code = 400
@@ -13,3 +14,13 @@ class InvalidData(Exception):
         rv = dict(self.payload or ())
         rv['message'] = self.message
         return rv
+
+
+def make_error(status_code: int, message: str):
+    response = jsonify({
+        'status_code': status_code,
+        'message': message
+    })
+    response.status_code = status_code
+    return response
+

@@ -80,9 +80,13 @@ curl http://localhost:5000/
 
 ## Running the tests
 
+TODO
+
 Explain how to run the automated tests for this system
 
 ### Break down into end to end tests
+
+TODO
 
 Explain what these tests test and why
 
@@ -92,6 +96,8 @@ Give an example
 
 ### And coding style tests
 
+TODO
+
 Explain what these tests test and why
 
 ```
@@ -100,7 +106,7 @@ Give an example
 
 ## Deployment
 
-Add additional notes about how to deploy this on a live system
+TODO
 
 ## Built With
 
