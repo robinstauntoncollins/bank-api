@@ -119,7 +119,7 @@ class TestOpenAccount():
         assert response.status_code == 200
         json = response.get_json()
         assert len(str(json['account']['account_number'])) == 20
-        assert json['account']['uri'] == '/api/v1/accounts/1'
+        assert json['account']['uri'] == '/api/v1/getCustomerInfo'
         assert json['account']['balance'] == 50.0
         assert json['account']['customer_id'] == c.id
 
@@ -154,7 +154,7 @@ class TestOpenAccount():
         assert response.status_code == 200
         json = response.get_json()
         assert len(str(json['account']['account_number'])) == 20
-        assert json['account']['uri'] == '/api/v1/accounts/1'
+        assert json['account']['uri'] == '/api/v1/getCustomerInfo'
         assert json['account']['balance'] == 0.0
         assert json['account']['customer_id'] == c.id
 
@@ -234,30 +234,88 @@ class TestGetCustomerInfo():
         assert json['customer'] == {
             'name': "Monty",
             'surname': "Python",
-            'uri': '/api/v1/customers/1'
+            'accounts': [
+                {
+                    'account_number': 1234,
+                    'balance': 100.0,
+                    'customer_id': c.id,
+                    'transactions': [
+                        {
+                            'amount': -20.0,
+                            'account_id': 1,
+                            'time': datetime(2020, 4, 20, 21).isoformat(),
+                        },
+                        {
+                            'amount': 50,
+                            'account_id': 1,
+                            'time': datetime(2020, 4, 19, 15).isoformat(),
+                        },
+                    ]
+                }
+            ]
         }
-        assert json['accounts'] == [
-            {
-                'uri': '/api/v1/accounts/1',
-                'account_number': 1234,
-                'balance': 100.0,
-                'customer_id': c.id
-            }
-        ]
-        assert json['transactions'] == [
-            {
-                'amount': -20.0,
-                'account_id': 1,
-                'time': datetime(2020, 4, 20, 21).isoformat(),
-                'uri': '/api/v1/transactions/1'
-            },
-            {
-                'amount': 50.0,
-                'account_id': 1,
-                'time': datetime(2020, 4, 19, 15).isoformat(),
-                'uri': '/api/v1/transactions/2'
-            },
-        ]
+
+    @pytest.mark.skip()
+    @pytest.mark.parametrize("url,data", test_data)
+    def test_get_customer_info_data_pagination(self, test_client, url, data, lots_of_transactions):
+        customer = Customer(name="Monty", surname="Python")
+        db.session.add(customer)
+        db.session.commit()
+
+        a1 = Account(account_number=1234, balance=100, customer_id=c.id)
+        a2 = Account(account_number=4321, balance=100, customer_id=c.id)
+        db.session.add(a1)
+        db.session.add(a1)
+        db.session.commit()
+
+
+        db.session.add_all(lots_of_transactions)
+        db.session.commit()
+
+        response = test_client.get(
+            url,
+            json=data
+        )
+
+        assert response.status_code == 200
+        json = response.get_json()
+        assert json['customer'] == {
+            'name': "Monty",
+            'surname': "Python",
+            'uri': '/api/v1/customers/1',
+            'accounts': [
+                {
+                    'uri': '/api/v1/accounts/1',
+                    'account_number': 1234,
+                    'balance': 100.0,
+                    'customer_id': c.id,
+                    'transactions': [
+                        {
+                            'amount': -20.0,
+                            'account_id': 1,
+                            'time': datetime(2020, 4, 20, 21).isoformat(),
+                            'uri': '/api/v1/transactions/1'
+                        }
+                    ]
+                },
+                {
+                    'uri': '/api/v1/accounts/2',
+                    'account_number': 1234,
+                    'balance': 100.0,
+                    'customer_id': c.id,
+                    'transactions': [
+                        {
+                            'amount': 50.0,
+                            'account_id': 2,
+                            'time': datetime(2020, 4, 19, 15).isoformat(),
+                            'uri': '/api/v1/transactions/2'
+                        }
+                    ]
+                }
+            ]
+        }
+
+
 
     test_error_data = [
         (

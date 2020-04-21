@@ -68,3 +68,75 @@ def test_transactions():
         }
     ]
     return [Transaction().import_data(transaction) for transaction in transactions]
+
+
+@pytest.fixture()
+def lots_of_transactions():
+    transactions = [
+        {
+            'account_id': 1,
+            'time': datetime(2020, 4, 19, 15, 0, 0),
+            'amount': 20
+        },
+        {
+            'account_id': 1,
+            'time': datetime(2020, 4, 19, 15, 0, 0),
+            'amount': 21
+        },
+        {
+            'account_id': 1,
+            'time': datetime(2020, 4, 19, 15, 0, 0),
+            'amount': 25
+        },
+        {
+            'account_id': 1,
+            'time': datetime(2020, 4, 19, 15, 0, 0),
+            'amount': 2756
+        },
+        {
+            'account_id': 1,
+            'time': datetime(2020, 4, 19, 15, 0, 0),
+            'amount': 2354
+        },
+        {
+            'account_id': 1,
+            'time': datetime(2020, 4, 19, 15, 0, 0),
+            'amount': 220
+        },
+        {
+            'account_id': 2,
+            'time': datetime(2020, 4, 19, 15, 0, 0),
+            'amount': -20
+        },
+        {
+            'account_id': 2,
+            'time': datetime(2020, 4, 19, 15, 0, 0),
+            'amount': -99.89
+        },
+        {
+            'account_id': 2,
+            'time': datetime(2020, 4, 19, 15, 0, 0),
+            'amount': 13.72
+        },
+        {
+            'account_id': 2,
+            'time': datetime(2020, 4, 19, 15, 0, 0),
+            'amount': -12.54
+        },
+        {
+            'account_id': 2,
+            'time': datetime(2020, 4, 19, 15, 0, 0),
+            'amount': -144
+        },
+        {
+            'account_id': 2,
+            'time': datetime(2020, 4, 19, 15, 0, 0),
+            'amount': 735
+        },
+        {
+            'account_id': 2,
+            'time': datetime(2020, 4, 19, 15, 0, 0),
+            'amount': -35
+        },
+    ]
+    return [Transaction().import_data(transaction) for transaction in transactions]

@@ -2,9 +2,8 @@ from flask import Blueprint, g, request, abort, current_app
 from flask_restful import marshal, fields
 
 import bank_api.api.v1 as bankapi_v1
-from bank_api.api.v1.accounts import create_account, account_fields
+from bank_api.api.v1.accounts import create_account
 from bank_api.api.v1.customers import customer_fields
-from bank_api.api.v1.transactions import transaction_fields
 from bank_api.models import Account, Transaction, Customer, db
 from bank_api.errors import make_error
 
@@ -65,6 +64,12 @@ def transfer():
 
     return {'result': True}
 
+account_fields = {
+    'account_number': fields.Integer,
+    'balance': fields.Float,
+    'customer_id': fields.Integer,
+    'uri': fields.Url('intent.get_customer_info')
+}
 
 @intent_api.route('/openAccount', methods=['POST'])
 def open_account():
@@ -112,6 +117,25 @@ def open_account():
         'account': marshal(a, account_fields)
     }
 
+transaction_fields = {
+    'amount': fields.Float,
+    'account_id': fields.Integer,
+    'time': fields.DateTime(dt_format='iso8601'),
+}
+
+account_fields_with_transactions = {
+    'account_number': fields.Integer,
+    'balance': fields.Float,
+    'customer_id': fields.Integer,
+    'transactions': fields.List(fields.Nested(transaction_fields))
+}
+
+customer_info_fields = {
+    'name': fields.String,
+    'surname': fields.String,
+    'accounts': fields.List(fields.Nested(account_fields_with_transactions))
+}
+
 
 @intent_api.route('/getCustomerInfo', methods=['GET'])
 def get_customer_info():
@@ -124,18 +148,9 @@ def get_customer_info():
     if not c_id or type(c_id) != str:
         return make_error(404, f"Missing 'customerID'. Expected 'str' got {type(c_id)}")
 
+    page = request.args.get('page', 1, type=int)
+    
     c = Customer.query.get_or_404(c_id)
+    return {'customer': marshal(c, customer_info_fields)}
 
-    response = {'customer': marshal(c, customer_fields)}
-
-    c_accounts = c.accounts.all()
-    response['accounts'] = [marshal(account, account_fields) for account in c_accounts]
-
-    transactions = []
-    for account in c_accounts:
-        for t in account.transactions.all():
-            transactions.append(t)
-    response['transactions'] = [marshal(t, transaction_fields) for t in transactions]
-
-    return response
         
