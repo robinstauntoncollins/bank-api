@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/robinstauntoncollins/bank-api.svg?branch=master)](https://travis-ci.org/robinstauntoncollins/bank-api)
+[![Coverage Status](https://coveralls.io/repos/github/robinstauntoncollins/bank-api/badge.svg?branch=master)](https://coveralls.io/github/robinstauntoncollins/bank-api?branch=master)
 
 # Bank API Coding Assingment
 
