@@ -119,16 +119,15 @@ def open_account():
 
 @intent_api.route('/getCustomerInfo', methods=['GET'])
 def get_customer_info():
-    if not request.json:
+    current_app.logger.info(f"Request parameters: {request.args}")
+    current_app.logger.info(f"Request data: {request.json}")
+    if not request.json and not request.args:
         abort(400)
 
-    json = request.get_json()
-    current_app.logger.info(f"Request received: {json}")
-    if 'customerID' not in json or type(json['customerID']) != str:
-        current_app.logger.info(f"'customerID' not found in {json}")
+    c_id = request.args.get('customerID') or request.json.get('customerID')
+    if not c_id or type(c_id) != str:
         abort(404)
 
-    c_id = json['customerID']
     c = Customer.query.get_or_404(c_id)
 
     response = {'customer': marshal(c, customer_fields)}

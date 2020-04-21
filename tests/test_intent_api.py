@@ -106,7 +106,7 @@ class TestOpenAccount():
     
 class TestGetCustomerInfo():
 
-    def test_get_customer_info(self, test_client):
+    def test_get_customer_info_data(self, test_client):
         customer = Customer(name="Monty", surname="Python")
         db.session.add(customer)
         db.session.commit()
@@ -158,4 +158,56 @@ class TestGetCustomerInfo():
                 'uri': '/api/v1/transactions/2'
             },
         ]
-        
+
+    def test_get_customer_info_parameter(self, test_client):
+        customer = Customer(name="Monty", surname="Python")
+        db.session.add(customer)
+        db.session.commit()
+        c = Customer.query.first()
+
+        account = Account(account_number=1234, balance=100, customer_id=c.id)
+        db.session.add(account)
+        db.session.commit()
+        a = Account.query.first()
+
+        t1 = Transaction(amount=-20, time=datetime(2020, 4, 20, 21), account_id=a.id)
+        t2 = Transaction(amount=50, time=datetime(2020, 4, 19, 15), account_id=a.id)
+        db.session.add_all([t1, t2])
+        db.session.commit()
+
+        response = test_client.get(
+            '/api/v1/getCustomerInfo?customerID=1',
+            json={
+                'customerID': str(c.id)
+            }
+        )
+
+        assert response.status_code == 200
+        json = response.get_json()
+        assert json['customer'] == {
+            'name': "Monty",
+            'surname': "Python",
+            'uri': '/api/v1/customers/1'
+        }
+        assert json['accounts'] == [
+            {
+                'uri': '/api/v1/accounts/1',
+                'account_number': 1234,
+                'balance': 100.0,
+                'customer_id': c.id
+            }
+        ]
+        assert json['transactions'] == [
+            {
+                'amount': -20.0,
+                'account_id': 1,
+                'time': datetime(2020, 4, 20, 21).isoformat(),
+                'uri': '/api/v1/transactions/1'
+            },
+            {
+                'amount': 50.0,
+                'account_id': 1,
+                'time': datetime(2020, 4, 19, 15).isoformat(),
+                'uri': '/api/v1/transactions/2'
+            },
+        ]
