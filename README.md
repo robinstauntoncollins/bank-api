@@ -71,39 +71,115 @@ Linux
 
 ### Make requests
 
-I like [HTTPie CLI](https://httpie.org/)
+I like [HTTPie CLI](https://httpie.org/) but curl works too.
 
 List of available endpoints
 
 ```
-curl http://localhost:5000/
+>> http GET http://localhost:5000/
+
+HTTP/1.0 200 OK
+Content-Length: 521
+Content-Type: application/json
+Date: Tue, 21 Apr 2020 21:17:57 GMT
+Server: Werkzeug/1.0.1 Python/3.7.0
+
+{
+    "version": {
+        "v1": {
+            "actions": {
+                "get_customer_url": "http://localhost:5000/api/v1/getCustomerInfo",
+                "open_account_url": "http://localhost:5000/api/v1/openAccount",
+                "transfer_url": "http://localhost:5000/api/v1/transfer"
+            },
+            "collections": {
+                "accounts_url": "http://localhost:5000/api/v1/accounts",
+                "customers_url": "http://localhost:5000/api/v1/customers",
+                "transactions_url": "http://localhost:5000/api/v1/transactions"
+            }
+        }
+    }
+}
 ```
 
+Make new customer
+
+```
+>> http POST http://localhost:5000/api/v1/customers name="Monty" surname="Python"
+HTTP/1.0 201 CREATED
+Content-Length: 119
+Content-Type: application/json
+Date: Tue, 21 Apr 2020 21:24:42 GMT
+Server: Werkzeug/1.0.1 Python/3.7.0
+
+{
+    "customer": {
+        "name": "Monty",
+        "surname": "Python",
+        "uri": "/api/v1/customers/1"
+    }
+}
+```
+
+Open new account for the newly created customer
+
+```
+>> http POST http://localhost:5000/api/v1/openAccount customerID=1 initialCredit=500
+HTTP/1.0 200 OK
+Content-Length: 170
+Content-Type: application/json
+Date: Tue, 21 Apr 2020 21:26:25 GMT
+Server: Werkzeug/1.0.1 Python/3.7.0
+
+{
+    "account": {
+        "account_number": 11210932237993115648,
+        "balance": 500.0,
+        "customer_id": 1,
+        "uri": "/api/v1/getCustomerInfo"
+    },
+    "result": true
+}
+```
+
+View all customer information: accounts, transactions
+
+```
+λ http GET http://localhost:5000/api/v1/getCustomerInfo customerID=1
+HTTP/1.0 200 OK
+Content-Length: 1071
+Content-Type: application/json
+Date: Tue, 21 Apr 2020 21:28:06 GMT
+Server: Werkzeug/1.0.1 Python/3.7.0
+
+{
+    "customer": {
+        "accounts": [
+            {
+                "account_number": 11210932237993115648,
+                "balance": 500.0,
+                "customer_id": 1,
+                "transactions": [
+                    {
+                        "account_id": 1,
+                        "amount": 500.0,
+                        "time": "2020-04-20T19:37:22.160495"
+                    }
+                ]
+            }
+        ],
+        "name": "Monty",
+        "surname": "Python"
+    }
+}
+```
 
 ## Running the tests
 
-TODO
-
-Explain how to run the automated tests for this system
-
-### Break down into end to end tests
-
-TODO
-
-Explain what these tests test and why
+Run with coverage report:
 
 ```
-Give an example
-```
-
-### And coding style tests
-
-TODO
-
-Explain what these tests test and why
-
-```
-Give an example
+pytest --cov=bank_api tests/
 ```
 
 ## Deployment
