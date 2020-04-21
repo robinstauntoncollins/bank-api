@@ -33,8 +33,16 @@ def create_app(config_name: str=None) -> Flask:
 
     @app.route('/')
     def index():
-        from bank_api.api.v1 import get_catelog as v1_catelog
-        return {'version': {'v1': v1_catelog()}}
+        from bank_api.api.v1 import get_catelog as v1_collections_catelog
+        from bank_api.intentapi import get_catelog as v1_actions_catelog
+        return {
+            'version': {
+                'v1': {
+                    'collections': v1_collections_catelog(),
+                    'actions': v1_actions_catelog()
+                }
+            }
+        }
 
     @app.errorhandler(400)
     def bad_request(error):

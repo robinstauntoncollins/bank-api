@@ -1,4 +1,4 @@
-from flask import Blueprint, g, request, abort, current_app
+from flask import Blueprint, g, request, abort, current_app, url_for
 from flask_restful import marshal, fields
 
 import bank_api.api.v1 as bankapi_v1
@@ -153,4 +153,10 @@ def get_customer_info():
     c = Customer.query.get_or_404(c_id)
     return {'customer': marshal(c, customer_info_fields)}
 
-        
+
+def get_catelog():
+    return {
+        'transfer_url': url_for('intent.transfer', _external=True),
+        'open_account_url': url_for('intent.open_account', _external=True),
+        'get_customer_url': url_for('intent.get_customer_info', _external=True)
+    }        

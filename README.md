@@ -54,7 +54,7 @@ Run tests
 pytest
 ```
 
-## Usage
+## Start Server Locally
 
 Start server
 
@@ -68,15 +68,16 @@ Linux
 ./bankapi.py
 ```
 
+
 ### Make requests
+
+I like [HTTPie CLI](https://httpie.org/)
 
 List of available endpoints
 
 ```
 curl http://localhost:5000/
 ```
-
-
 
 
 ## Running the tests
@@ -107,7 +108,19 @@ Give an example
 
 ## Deployment
 
-TODO
+### Docker
+
+Build image
+
+```
+docker built -t bankapi:latest .
+```
+
+Start container
+
+```
+docker run --name bankapi -d -p 5000:5000 --rm bankapi:latest
+```
 
 ## Built With
 
