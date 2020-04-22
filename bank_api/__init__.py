@@ -13,7 +13,7 @@ from bank_api.intentapi import intent_api
 
 def create_app(config_name: str=None) -> Flask:
     if config_name is None:
-        config_name = os.environ.get('BANKAPI_CONFIG', 'development')
+        config_name = 'default'
     app = Flask(__name__)
     app.config.from_object(config[config_name])
 

@@ -54,6 +54,12 @@ Run tests
 pytest
 ```
 
+Initialize database
+
+```
+flask createdb
+```
+
 ## Start Server Locally
 
 Start server
@@ -189,7 +195,7 @@ pytest --cov=bank_api tests/
 Build image
 
 ```
-docker built -t bankapi:latest .
+docker build -t bankapi:latest .
 ```
 
 Start container
