@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import os
 import click
 from bank_api import create_app, db, models, utils

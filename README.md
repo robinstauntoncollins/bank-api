@@ -54,12 +54,6 @@ Run tests
 pytest
 ```
 
-Initialize database
-
-```
-flask createdb
-```
-
 ## Start Server Locally
 
 Start server
@@ -178,6 +172,14 @@ Server: Werkzeug/1.0.1 Python/3.7.0
         "surname": "Python"
     }
 }
+```
+
+### Other commands
+
+Initialize database with preloaded data
+
+```
+flask createdb
 ```
 
 ## Running the tests
