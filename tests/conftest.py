@@ -1,4 +1,5 @@
 from datetime import datetime
+import unittest.mock as mock
 import pytest
 
 from bank_api import create_app
@@ -18,6 +19,12 @@ def test_client():
         yield client
         db.drop_all()
         ctx.pop()
+
+@pytest.fixture()
+def mock_get_account_number():
+    with mock.patch('bank_api.utils.generate_random_account_number') as mock_get_an:
+        mock_get_an.return_value = '0123456789'
+        yield mock_get_an
 
 
 @pytest.fixture()

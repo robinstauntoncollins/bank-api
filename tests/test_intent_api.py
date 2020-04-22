@@ -80,6 +80,17 @@ class TestTransfer():
                 'status_code': 404
             }
         ),
+        (
+            {
+                'senderAccount': '12345',
+                'receiverAccount': '54321',
+                'amount': '550'
+            },
+            {
+                'message': "Couldn't find account: 12345",
+                'status_code': 404
+            }
+        )
 
     ]
 
@@ -89,8 +100,39 @@ class TestTransfer():
             '/api/v1/transfer',
             json=data
         )
-        assert response.json == expected
+        assert response.json == expected    
 
+
+    def test_transfer_insufficient_balance(self, test_client):
+        s = Account(account_number='1234', balance=400)
+        r = Account(account_number='5432')
+        db.session.add_all([s, r])
+        db.session.commit()
+
+        response = test_client.post(
+            '/api/v1/transfer',
+            json={'senderAccount': '1234', 'receiverAccount': '5432', 'amount': '550'}
+        )
+        assert response.json == {
+            'message': 'Insufficient balance',
+            'status_code': 403
+        }
+        assert response.status_code == 403
+
+    def test_transfer_cant_find_receiver_account(self, test_client):
+        s = Account(account_number='1234', balance=400)
+        db.session.add(s)
+        db.session.commit()
+
+        response = test_client.post(
+            '/api/v1/transfer',
+            json={'senderAccount': '1234', 'receiverAccount': '5432', 'amount': '550'}
+        )
+        assert response.json == {
+            'message': "Couldn't find account: 5432",
+            'status_code': 404
+        }
+        assert response.status_code == 404
         
 class TestOpenAccount():
 
@@ -191,7 +233,28 @@ class TestOpenAccount():
             '/api/v1/openAccount',
             json=data
         )
-        assert response.json == expected        
+        assert response.json == expected
+
+    def test_open_account_collision(self, test_client, mock_get_account_number):
+        c = Customer(name="Robin", surname="Staunton-Collins")
+        db.session.add(c)
+        db.session.commit()
+        c = Customer.query.first()
+        a = Account(account_number='0123456789', customer_id=c.id)
+        db.session.add(a)
+        db.session.commit()
+
+        response = test_client.post(
+            '/api/v1/openAccount',
+            json={'customerID': str(c.id)}
+        )
+        assert response.status_code == 403
+        assert response.json == {
+            'message': 'An account with that number already exists',
+            'status_code': 403
+        }
+
+
 
     
 class TestGetCustomerInfo():

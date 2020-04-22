@@ -156,3 +156,10 @@ class TestTransactionModel():
         a = Account.query.first()
         assert t.account_id == a.id
         assert a.transactions.first() == t
+
+    def test_transaction_import_data(self, test_client):
+        with pytest.raises(ValueError):
+            t = Transaction().import_data({'account_id': 1})
+        
+        with pytest.raises(ValueError):
+            t = Transaction().import_data({})

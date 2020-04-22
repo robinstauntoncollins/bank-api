@@ -1,5 +1,6 @@
 from flask_restful import Resource, reqparse, fields, marshal
-from bank_api import models
+from bank_api import models, db
+from bank_api.errors import make_error
 
 customer_fields = {
     'name': fields.String,
@@ -29,11 +30,33 @@ class CustomerListAPI(Resource):
 
 class CustomerAPI(Resource):
 
+    def __init__(self):
+        self.reqparse = reqparse.RequestParser()
+        self.reqparse.add_argument('name', type=str, default="", location="json")
+        self.reqparse.add_argument('surname', type=str, default="", location="json")
+        super(CustomerAPI, self).__init__()
+
     def get(self, id):
-        pass
+        c = models.Customer.query.get(id)
+        if not c:
+            return make_error(404, f"No customer with id: {id}")
+        return {'customer': marshal(c, customer_fields)}
 
     def put(self, id):
-        pass
+        c = models.Customer.query.get_or_404(id)
+        args = self.reqparse.parse_args()
+        if 'name' in args:
+            c.name = args['name']
+        if 'surname' in args:
+            c.surname = args['surname']
+        db.session.add(c)
+        db.session.commit()
+        return {'customer': marshal(c, customer_fields)}
+
 
     def delete(self, id):
-        pass
+        c = models.Customer.query.get_or_404(id)
+        db.session.delete(c)
+        db.session.commit()
+        return {'result': True}
+        

@@ -1,4 +1,5 @@
-from bank_api import create_app, db, models
+import click
+from bank_api import create_app, db, models, utils
 from config import config
 
 app = create_app('development')
@@ -10,6 +11,42 @@ def make_shell_context():
         'Account': models.Account,
         'Customer': models.Customer,
         'Transaction': models.Transaction}
+
+
+@app.cli.command('createdb')
+@click.option('--test-data', type=bool, default=True, help="Initializes database with pre-loaded data")
+def createdb(test_data):
+    db.drop_all()
+    db.create_all()
+    if test_data:
+        customer_data = [
+            {'name': "Robin", 'surname': "Staunton-Collins"},
+            {'name': "Matin", 'surname': "Abbasi"},
+            {'name': "Rodrigo", 'surname': "Hammerly"},
+            {'name': "Monty", 'surname': "Python"}
+        ]
+        account_data = [
+            {'customer_id': 1, 'balance': 50, 'account_number': utils.generate_random_account_number()},
+            {'customer_id': 1, 'balance': 40, 'account_number': utils.generate_random_account_number()},
+            {'customer_id': 2, 'balance': 450, 'account_number': utils.generate_random_account_number()},
+        ]
+
+        transaction_data = [
+            {'account_id': 1, 'amount': 50},
+            {'account_id': 2, 'amount': 40},
+            {'account_id': 3, 'amount': 450},
+        ]
+
+        customers = [models.Customer().import_data(c) for c in customer_data]
+        db.session.add_all(customers)
+
+        accounts = [models.Account().import_data(a) for a in account_data]
+        db.session.add_all(accounts)
+
+        transactions = [models.Transaction().import_data(t) for t in transaction_data]
+        db.session.add_all(transactions)
+
+        db.session.commit()
 
 if __name__ == '__main__':
     app.run(debug=True)

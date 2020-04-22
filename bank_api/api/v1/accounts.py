@@ -25,23 +25,10 @@ class AccountListAPI(Resource):
     def post(self):
         args = self.reqparse.parse_args()
         customer = models.Customer.query.get_or_404(args['customer_id'])
-        account = create_account(customer, args['balance'])
+        account = utils.create_account(customer, args['balance'])
         models.db.session.add(account)
         models.db.session.commit()
         return {'account': marshal(account, account_fields)}, 201
-
-
-def create_account(customer: models.Customer, balance: Optional[float]=0) -> models.Account:
-    account_number = utils.generate_random_account_number()
-    if models.Account.query.filter_by(account_number=account_number).first() is not None:
-        raise errors.InvalidData(f"An account with this number already exists")
-    data ={
-        'account_number': account_number,
-        'balance': balance,
-        'customer_id': customer.id
-    }
-    return models.Account().import_data(data)
-
         
 
 class AccountAPI(Resource):

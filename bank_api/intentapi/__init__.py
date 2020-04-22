@@ -2,10 +2,10 @@ from flask import Blueprint, g, request, abort, current_app, url_for
 from flask_restful import marshal, fields
 
 import bank_api.api.v1 as bankapi_v1
-from bank_api.api.v1.accounts import create_account
 from bank_api.api.v1.customers import customer_fields
 from bank_api.models import Account, Transaction, Customer, db
 from bank_api.errors import make_error
+from bank_api.utils import create_account
 
 intent_api = Blueprint('intent', __name__)
 
@@ -33,16 +33,13 @@ def transfer():
     # Retrieve Resources
     s = Account.query.filter_by(account_number=s_an).first()
     if not s:
-        current_app.logger.info(f"Couldn't find account with number: {s_an}")
         return make_error(404, f"Couldn't find account: {s_an}")
     r = Account.query.filter_by(account_number=r_an).first()
-    if not s:
-        current_app.logger.info(f"Couldn't find account with number: {r_an}")
+    if not r:
         return make_error(404, f"Couldn't find account: {r_an}")
 
     # Check sufficient balance
     if s.balance - amount < 0:
-        current_app.logger.info(f"Insufficient balance: {s}")
         return make_error(403, "Insufficient balance")
 
     # Generate transactions
@@ -53,10 +50,10 @@ def transfer():
     db.session.add(r_transaction)
 
     # Perform operations
-    s.balance -= amount
+    s.balance -= round(amount, 2)
     db.session.add(s)
 
-    r.balance += amount
+    r.balance += round(amount)
     db.session.add(r)
 
     # Commit results
@@ -87,7 +84,10 @@ def open_account():
     c = Customer.query.get_or_404(c_id)
 
     # Create new account
-    a = create_account(c)
+    try:
+        a = create_account(c)
+    except ValueError as v_err:
+        return make_error(403, str(v_err))
     db.session.add(a)
     db.session.commit()
     a = Account.query.filter_by(account_number=a.account_number).first()
