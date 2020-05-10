@@ -19,38 +19,46 @@ A step by step series of examples that tell you how to get a development env run
 
 Clone the repo
 
-```
+```bash
 git clone https://github.com/robinstauntoncollins/bank-api.git
 cd bank-api
 ```
 
 Create virtual environment
 
-```
+```bash
 python -m venv venv/
 ```
 
 Activate virtual environment
 
 On Linux
-```
+
+```bash
 source venv/bin/activate
 ```
+
 On Windows
 
-```
+```bash
 source venv/Scripts/activate
 ```
 
 Install dependencies
 
-```
+```bash
 pip install -r requirements.txt
+```
+
+Initialize database
+
+```bash
+flask db migrate
 ```
 
 Run tests
 
-```
+```bash
 pytest
 ```
 
@@ -59,15 +67,16 @@ pytest
 Start server
 
 Windows
-```
+
+```bash
 python bankapi.py
 ```
 
 Linux
-```
+
+```bash
 ./bankapi.py
 ```
-
 
 ### Make requests
 
@@ -75,7 +84,7 @@ I like [HTTPie CLI](https://httpie.org/) but curl works too.
 
 List of available endpoints
 
-```
+```bash
 >> http GET http://localhost:5000/
 
 HTTP/1.0 200 OK
@@ -104,7 +113,7 @@ Server: Werkzeug/1.0.1 Python/3.7.0
 
 Make new customer
 
-```
+```bash
 >> http POST http://localhost:5000/api/v1/customers name="Monty" surname="Python"
 HTTP/1.0 201 CREATED
 Content-Length: 119
@@ -123,7 +132,7 @@ Server: Werkzeug/1.0.1 Python/3.7.0
 
 Open new account for the newly created customer
 
-```
+```bash
 >> http POST http://localhost:5000/api/v1/openAccount customerID=1 initialCredit=500
 HTTP/1.0 200 OK
 Content-Length: 170
@@ -144,7 +153,7 @@ Server: Werkzeug/1.0.1 Python/3.7.0
 
 View all customer information: accounts, transactions
 
-```
+```bash
 λ http GET http://localhost:5000/api/v1/getCustomerInfo customerID=1
 HTTP/1.0 200 OK
 Content-Length: 1071
@@ -176,9 +185,9 @@ Server: Werkzeug/1.0.1 Python/3.7.0
 
 ### Other commands
 
-Initialize database with preloaded data
+Initialize database with preloaded data (Optional)
 
-```
+```bash
 flask createdb
 ```
 
@@ -186,7 +195,7 @@ flask createdb
 
 Run with coverage report:
 
-```
+```bash
 pytest --cov=bank_api tests/
 ```
 
@@ -196,13 +205,13 @@ pytest --cov=bank_api tests/
 
 Build image
 
-```
+```bash
 docker build -t bankapi:latest .
 ```
 
 Start container
 
-```
+```bash
 docker run --name bankapi -d -p 5000:5000 --rm bankapi:latest
 ```
 
@@ -216,5 +225,3 @@ docker run --name bankapi -d -p 5000:5000 --rm bankapi:latest
 ## License
 
 This project is licensed under The Unlicense - see the [LICENSE.md](LICENSE.md) file for details
-
-
