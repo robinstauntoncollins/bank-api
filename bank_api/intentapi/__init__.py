@@ -50,10 +50,10 @@ def transfer():
     db.session.add(r_transaction)
 
     # Perform operations
-    s.balance -= round(amount, 2)
+    s.balance -= amount
     db.session.add(s)
 
-    r.balance += round(amount)
+    r.balance += amount
     db.session.add(r)
 
     # Commit results
@@ -111,11 +111,11 @@ def open_account():
     # Commit results
     db.session.commit()
 
-
     return {
         'result': True,
         'account': marshal(a, account_fields)
     }
+
 
 transaction_fields = {
     'amount': fields.Float,
