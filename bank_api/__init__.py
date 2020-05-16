@@ -58,6 +58,5 @@ def create_app(config_name: str=None) -> Flask:
     @app.errorhandler(500)
     def internal_server_error(error):
         return make_response({'error': 'Internal Server Error'}, 500)
-    
+
     return app
-    
