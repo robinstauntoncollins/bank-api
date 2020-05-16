@@ -6,7 +6,7 @@ from config import config
 from .models import db
 
 from bank_api.api.v1 import api_v1_bp, API_VERSION_V1
-from bank_api.intentapi import intent_api
+from bank_api.intentapi import intent_api_bp
 
 
 def create_app(config_name: str = None) -> Flask:
@@ -24,7 +24,7 @@ def create_app(config_name: str = None) -> Flask:
     )
 
     app.register_blueprint(
-        intent_api,
+        intent_api_bp,
         url_prefix=f"{app.config['URL_PREFIX']}/v{API_VERSION_V1}"
     )
 

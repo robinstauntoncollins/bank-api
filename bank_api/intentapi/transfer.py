@@ -3,7 +3,7 @@ from flask import request, current_app
 from bank_api.models import Account, Transaction, db
 from bank_api.errors import make_error
 
-from intentapi import intent_api_bp
+from . import intent_api_bp
 
 
 @intent_api_bp.route('/transfer', methods=['POST'])

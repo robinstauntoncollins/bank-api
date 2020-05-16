@@ -4,8 +4,8 @@ from flask_restful import marshal
 from bank_api.errors import make_error
 from bank_api.models import Customer
 
-from intentapi import intent_api_bp
-from intentapi.common import customer_info_fields
+from . import intent_api_bp
+from .common import customer_info_fields
 
 
 @intent_api_bp.route('/getCustomerInfo', methods=['GET'])

@@ -5,8 +5,8 @@ from bank_api.errors import make_error
 from bank_api.models import Customer, Account, Transaction, db
 from bank_api.utils import create_account
 
-from intentapi import intent_api_bp
-from intentapi.common import account_fields
+from . import intent_api_bp
+from .common import account_fields
 
 
 @intent_api_bp.route('/openAccount', methods=['POST'])
