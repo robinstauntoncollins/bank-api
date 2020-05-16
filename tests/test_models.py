@@ -90,7 +90,7 @@ class TestCustomerModel():
         db.session.commit()
         c = Customer.query.first()
         assert repr(c) == "<Customer Robin Staunton-Collins>"
-    
+
     def test_customer_model_db(self, test_client):
         new_customer = Customer().import_data({
             'name': 'Robin',
@@ -101,7 +101,6 @@ class TestCustomerModel():
         customer = Customer.query.first()
         assert customer == new_customer
 
-    
     def test_customer_accounts(self, test_client):
         customer = Customer(name="Robin", surname="Staunton-Collins")
         first_account = Account(account_number=1234, balance=50, owner=customer)
@@ -143,7 +142,6 @@ class TestTransactionModel():
         t = Transaction.query.first()
         assert repr(t) == "<Transaction - t_id: 1 time: 2020-04-19 15:00:00 account_id: 1 amount: 50.0>"
 
-
     def test_transactions_on_account(self, test_client):
         a = Account(account_number='12345', balance=50, customer_id=1)
         db.session.add(a)
@@ -159,7 +157,7 @@ class TestTransactionModel():
 
     def test_transaction_import_data(self, test_client):
         with pytest.raises(ValueError):
-            t = Transaction().import_data({'account_id': 1})
-        
+            Transaction().import_data({'account_id': 1})
+
         with pytest.raises(ValueError):
-            t = Transaction().import_data({})
+            Transaction().import_data({})

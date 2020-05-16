@@ -1,6 +1,5 @@
-from typing import Optional
 from flask_restful import Resource, reqparse, fields, marshal
-from bank_api import models, utils, errors
+from bank_api import models, utils
 
 
 account_fields = {
@@ -10,10 +9,11 @@ account_fields = {
     'uri': fields.Url('api.account')
 }
 
+
 class AccountListAPI(Resource):
 
     def __init__(self):
-        self.reqparse = reqparse.RequestParser()        
+        self.reqparse = reqparse.RequestParser()
         self.reqparse.add_argument('customer_id', type=int, required=True, location="json")
         self.reqparse.add_argument('balance', type=float, default=0, required=False, location="json")
         super(AccountListAPI, self).__init__()
@@ -29,12 +29,12 @@ class AccountListAPI(Resource):
         models.db.session.add(account)
         models.db.session.commit()
         return {'account': marshal(account, account_fields)}, 201
-        
+
 
 class AccountAPI(Resource):
 
     def __init__(self):
-        self.reqparse = reqparse.RequestParser()        
+        self.reqparse = reqparse.RequestParser()
         self.reqparse.add_argument('balance', type=float, required=False, location="json")
         super(AccountAPI, self).__init__()
 

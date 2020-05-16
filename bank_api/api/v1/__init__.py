@@ -1,4 +1,4 @@
-from flask import Blueprint, g
+from flask import Blueprint
 from flask_restful import Api
 
 
@@ -16,7 +16,12 @@ api.add_resource(customers.CustomerListAPI, '/customers', '/customers/', endpoin
 api.add_resource(customers.CustomerAPI, '/customers/<int:id>', '/customers/<int:id>', endpoint='customer')
 
 api.add_resource(transactions.TransactionListAPI, '/transactions', '/transactions/', endpoint='transactions')
-api.add_resource(transactions.TransactionAPI, '/transactions/<int:id>', '/transactions/<int:id>', endpoint='transaction')
+api.add_resource(
+    transactions.TransactionAPI,
+    '/transactions/<int:id>',
+    '/transactions/<int:id>',
+    endpoint='transaction'
+)
 
 
 def get_catelog():

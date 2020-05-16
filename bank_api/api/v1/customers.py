@@ -8,6 +8,7 @@ customer_fields = {
     'uri': fields.Url('api.customer')
 }
 
+
 class CustomerListAPI(Resource):
 
     def __init__(self):
@@ -53,10 +54,8 @@ class CustomerAPI(Resource):
         db.session.commit()
         return {'customer': marshal(c, customer_fields)}
 
-
     def delete(self, id):
         c = models.Customer.query.get_or_404(id)
         db.session.delete(c)
         db.session.commit()
         return {'result': True}
-        

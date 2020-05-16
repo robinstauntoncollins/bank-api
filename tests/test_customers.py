@@ -1,7 +1,3 @@
-import os
-
-import pytest
-
 from bank_api.models import db, Customer
 
 
@@ -67,7 +63,7 @@ class TestCustomers():
                 'uri': '/api/v1/customers/1'
             }
         }
-        
+
     def test_delete_customer(self, test_client):
         c = Customer(name="Robin", surname="Staunton-Collins")
         db.session.add(c)
@@ -110,6 +106,3 @@ class TestCustomers():
             'message': "No customer with id: 1",
             'status_code': 404
         }
-
-
-

@@ -15,10 +15,11 @@ def test_client():
         ctx.push()
         db.drop_all()
         db.create_all()
-   
+
         yield client
         db.drop_all()
         ctx.pop()
+
 
 @pytest.fixture()
 def mock_get_account_number():
@@ -40,7 +41,6 @@ def test_customers():
         },
     ]
     return [Customer().import_data(customer) for customer in customers]
-
 
 
 @pytest.fixture()

@@ -1,8 +1,8 @@
-import os
 from datetime import datetime
 import pytest
 
 from bank_api.models import db, Account, Transaction, Customer
+
 
 class TestTransfer():
 
@@ -100,8 +100,7 @@ class TestTransfer():
             '/api/v1/transfer',
             json=data
         )
-        assert response.json == expected    
-
+        assert response.json == expected
 
     def test_transfer_insufficient_balance(self, test_client):
         s = Account(account_number='1234', balance=400)
@@ -133,7 +132,8 @@ class TestTransfer():
             'status_code': 404
         }
         assert response.status_code == 404
-        
+
+
 class TestOpenAccount():
 
     test_data = [
@@ -255,8 +255,6 @@ class TestOpenAccount():
         }
 
 
-
-    
 class TestGetCustomerInfo():
 
     test_data = [
@@ -321,16 +319,15 @@ class TestGetCustomerInfo():
     @pytest.mark.skip()
     @pytest.mark.parametrize("url,data", test_data)
     def test_get_customer_info_data_pagination(self, test_client, url, data, lots_of_transactions):
-        customer = Customer(name="Monty", surname="Python")
-        db.session.add(customer)
+        c = Customer(name="Monty", surname="Python")
+        db.session.add(c)
         db.session.commit()
 
         a1 = Account(account_number=1234, balance=100, customer_id=c.id)
         a2 = Account(account_number=4321, balance=100, customer_id=c.id)
         db.session.add(a1)
-        db.session.add(a1)
+        db.session.add(a2)
         db.session.commit()
-
 
         db.session.add_all(lots_of_transactions)
         db.session.commit()
@@ -378,8 +375,6 @@ class TestGetCustomerInfo():
             ]
         }
 
-
-
     test_error_data = [
         (
             {},
@@ -405,4 +400,4 @@ class TestGetCustomerInfo():
             '/api/v1/getCustomerInfo',
             json=data
         )
-        assert response.json == expected     
+        assert response.json == expected

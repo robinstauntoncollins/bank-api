@@ -1,0 +1,4 @@
+[flake8]
+ignore=E402
+exclude = .git,__pycache__,docs/source/conf.py,old,build,dist,main_db_migs,trans_db_migs,docs,htmlcov,.coverage,transaction_service,venv,migrations
+max-line-length=120

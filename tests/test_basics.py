@@ -1,16 +1,14 @@
-import os
 from flask import current_app
-import pytest
 
-from bank_api import create_app
 
 def test_app_exists(test_client):
     assert current_app is not None
 
-def test_app_is_testing(test_client):
-    assert current_app.config['TESTING'] == True
 
-    
+def test_app_is_testing(test_client):
+    assert current_app.config['TESTING'] is True
+
+
 def test_index(test_client):
     response = test_client.get('/')
     assert response.json == {
@@ -20,7 +18,7 @@ def test_index(test_client):
                     'accounts_url': 'http://localhost/api/v1/accounts',
                     'customers_url': 'http://localhost/api/v1/customers',
                     'transactions_url': 'http://localhost/api/v1/transactions'
-                    },
+                },
                 'actions': {
                     'transfer_url': 'http://localhost/api/v1/transfer',
                     'open_account_url': 'http://localhost/api/v1/openAccount',

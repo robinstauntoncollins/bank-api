@@ -2,9 +2,9 @@
 import os
 import click
 from bank_api import create_app, db, models, utils
-from config import config
 
 app = create_app(os.getenv('FLASK_CONFIG') or 'default')
+
 
 @app.shell_context_processor
 def make_shell_context():
@@ -49,6 +49,7 @@ def createdb(test_data):
         db.session.add_all(transactions)
 
         db.session.commit()
+
 
 if __name__ == '__main__':
     app.run(debug=True)

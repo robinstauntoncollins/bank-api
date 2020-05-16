@@ -1,8 +1,3 @@
-import os
-
-import pytest
-
-from bank_api import create_app
 from bank_api.models import db, Customer
 
 
@@ -28,7 +23,7 @@ class TestAccounts():
                 },
             ]
         }
-    
+
     def test_post_accounts(self, test_client):
         c = Customer(name="Robin", surname="Staunton-Collins")
         db.session.add(c)

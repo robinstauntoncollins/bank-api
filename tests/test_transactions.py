@@ -1,10 +1,7 @@
-import os
 from datetime import datetime
 
-import pytest
+from bank_api.models import db, Account
 
-from bank_api import create_app
-from bank_api.models import db, Transaction, Account
 
 class TestTransactions():
 
@@ -28,7 +25,7 @@ class TestTransactions():
                 },
             ]
         }
-    
+
     def test_post_transactions(self, test_client):
         a = Account(account_number=123456789, customer_id=1, balance=50)
         db.session.add(a)

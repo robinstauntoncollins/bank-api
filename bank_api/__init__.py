@@ -1,4 +1,3 @@
-import os
 from flask import Flask, make_response
 from flask_migrate import Migrate
 
@@ -7,18 +6,17 @@ from config import config
 from .models import db
 
 from bank_api.api.v1 import api_v1_bp, API_VERSION_V1
-from bank_api.models import Customer, Account, Transaction
 from bank_api.intentapi import intent_api
 
 
-def create_app(config_name: str=None) -> Flask:
+def create_app(config_name: str = None) -> Flask:
     if config_name is None:
         config_name = 'default'
     app = Flask(__name__)
     app.config.from_object(config[config_name])
 
     db.init_app(app)
-    migrate = Migrate(app, db)
+    _ = Migrate(app, db)
 
     app.register_blueprint(
         api_v1_bp,

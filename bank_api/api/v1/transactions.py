@@ -1,5 +1,5 @@
 from flask_restful import Resource, reqparse, fields, marshal
-from bank_api import models, utils, errors
+from bank_api import models
 
 
 transaction_fields = {
@@ -9,10 +9,11 @@ transaction_fields = {
     'uri': fields.Url('api.transaction')
 }
 
+
 class TransactionListAPI(Resource):
 
     def __init__(self):
-        self.reqparse = reqparse.RequestParser()        
+        self.reqparse = reqparse.RequestParser()
         self.reqparse.add_argument('account_id', type=int, required=True, location="json")
         self.reqparse.add_argument('amount', type=float, required=True, location="json")
         super(TransactionListAPI, self).__init__()
@@ -28,7 +29,6 @@ class TransactionListAPI(Resource):
         models.db.session.commit()
         return {'transaction': marshal(transaction, transaction_fields)}, 201
 
-        
 
 class TransactionAPI(Resource):
 

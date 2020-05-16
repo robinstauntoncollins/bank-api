@@ -1,5 +1,6 @@
 import pytest
-from bank_api import utils, models, errors
+from bank_api import utils, models
+
 
 class TestGenerateRandomAccountNumber():
 
@@ -36,5 +37,3 @@ class TestCreateAccount():
 
         with pytest.raises(ValueError):
             utils.create_account(c, 50)
-
-
